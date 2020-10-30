@@ -1,0 +1,33 @@
+#LOAD NECESSARY LIBRARIES
+library(ggplot2)
+library(MASS)
+
+#LOAD AND VIEW DATA
+attach(iris)
+str(iris)
+
+#SCALE PREDICTOR VARIABLES
+iris[1:4] <- scale(iris[1:4])
+
+#check that each predictor variable has mean=0 and sd=1
+apply(iris[1:4], 2, mean)
+apply(iris[1:4], 2, sd)
+
+#SPLIT DATA INTO TRAINING AND TESTING SET
+set.seed(1)
+sample <- sample(c(TRUE, FALSE), nrow(iris), replace=TRUE, prob=c(0.7,0.3))
+train <- iris[sample, ]
+test <- iris[!sample, ] 
+
+#FIT LDA MODEL
+model <- lda(Species~., data=train)
+model
+
+#USE MODEL TO MAKE PREDICTIONS
+predicted <- predict(model, test)
+mean(predicted$class==test$Species)
+
+#VISUALIZE LINEAR DISCRIMINANTS
+lda_plot <- cbind(train, predict(model)$x)
+ggplot(lda_plot, aes(LD1, LD2)) +
+  geom_point(aes(color = Species))
