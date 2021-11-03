@@ -1,4 +1,6 @@
 library(tidyverse)
+library(ggplot2)
+
 
 #load data
 data("USArrests")
